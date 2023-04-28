@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 
+// CONTEXT THEME
+import ThemeContextProvider from "./ThemeContextProvider/index";
+
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {

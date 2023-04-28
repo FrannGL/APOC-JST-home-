@@ -1,42 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-
-class Usuario {
-  static id = 0;
-
-  constructor(
-    apellido,
-    nombre,
-    nroAfiliado,
-    fechaNacimiento,
-    dni,
-    cuit,
-    genero,
-    estadoCivil,
-    hijos,
-    categoria,
-    mail,
-    celular,
-    sector
-  ) {
-    Usuario.id++;
-    this.orden = Usuario.id;
-    this.apellido = apellido;
-    this.nombre = nombre;
-    this.nroAfiliado = nroAfiliado;
-    this.fechaNacimiento = fechaNacimiento;
-    this.dni = dni;
-    this.cuit = cuit;
-    this.genero = genero;
-    this.estadoCivil = estadoCivil;
-    this.hijos = hijos;
-    this.categoria = categoria;
-    this.mail = mail;
-    this.celular = celular;
-    this.sector = sector;
-  }
-}
+import TableList from "./TableList";
+import Swal from "sweetalert2";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 
 export default function createUser() {
   const [allUsers, setAllUsers] = useState([]);
@@ -56,6 +22,17 @@ export default function createUser() {
       console.error("Error al crear el usuario: ", error);
     }
   };
+
+  useEffect(() => {
+    const db = getFirestore();
+    const usersCollettion = collection(db, "usuarios");
+    getDocs(usersCollettion)
+      .then((snapshot) => {
+        const docs = snapshot.docs;
+        setAllUsers(docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      })
+      .catch((err) => console.log(err));
+  }, [allUsers]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -78,24 +55,9 @@ export default function createUser() {
       const celular = document.getElementById("celular").value;
       const sector = document.getElementById("sector").value;
 
-      // const user = new Usuario(
-      //   apellido,
-      //   nombre,
-      //   nroAfiliado,
-      //   fechaNacimiento,
-      //   dni,
-      //   cuit,
-      //   genero,
-      //   estadoCivil,
-      //   hijos,
-      //   categoria,
-      //   mail,
-      //   celular,
-      //   sector
-      // );
       const user = {
-        userApellido: apellido,
-        userNombre: nombre,
+        userApellido: apellido.toUpperCase(),
+        userNombre: nombre.toUpperCase(),
         userNroAfiliado: nroAfiliado,
         userFechaNacimiento: fechaNacimiento,
         userDni: dni,
@@ -103,26 +65,23 @@ export default function createUser() {
         userGenero: genero,
         userEstadoCivil: estadoCivil,
         userHijos: hijos,
-        userCategoria: categoria,
+        userCategoria: categoria.toUpperCase(),
         userMail: mail,
         userCelular: celular,
         userSector: sector,
       };
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Usuario Agregado Correctamente",
+        showConfirmButton: true,
+        timer: 1500,
+      });
       newUser(user);
       sendResultsToFirestore(user);
     }
     setValidated(true);
   };
-
-  // useEffect(() => {
-  //   if (validated) {
-  //     const myform = document.getElementById("myForm");
-  //     myform.reset();
-  //     setValidated(false);
-  //   }
-  // }, [validated]);
-
-  console.log(allUsers);
 
   return (
     <>
@@ -253,6 +212,7 @@ export default function createUser() {
                   <option value="Soltero">Soltero</option>
                   <option value="Casado">Casado</option>
                   <option value="Union Convivencial">Union Convivencial</option>
+                  <option value="Divorciado">Divorciado</option>
                   <option value="Otro">Otro</option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
@@ -330,11 +290,64 @@ export default function createUser() {
                   id="sector"
                 >
                   <option value="">Seleccionar...</option>
-                  <option value="GESTIÓN PATRIMONIAL Y SERVICIOS GENERALES">
-                    GESTIÓN PATRIMONIAL Y SERVICIOS GENERALES
+                  <option value="AREA TECNICA OPERATIVA">
+                    AREA TECNICA OPERATIVA
                   </option>
-                  <option value="COORDINACIÓN DE SISTEMS">
-                    COORDINACIÓN DE SISTEMS
+                  <option value="AREA DE RELEVAMIENTO TECNICO">
+                    AREA DE RELEVAMIENTO TECNICO
+                  </option>
+                  <option value="COORDINACION DE SISTEMS">
+                    COORDINACION DE SISTEMS
+                  </option>
+                  <option value="COORDINACION FEDERAL">
+                    COORDINACION FEDERAL
+                  </option>
+                  <option value="COORDINACION INSTITUCIONAL">
+                    COORDINACION INSTITUCIONAL
+                  </option>
+                  <option value="DIRECCION DE ADMINISTRACION">
+                    DIRECCION DE ADMINISTRACION
+                  </option>
+                  <option value="DIRECCION DE ASUNTOS JURIDICOS">
+                    DIRECCION DE ASUNTOS JURIDICOS
+                  </option>
+                  <option value="DIRECCION DE CAPACITACION">
+                    DIRECCION DE CAPACITACION
+                  </option>
+                  <option value="DIRECCION DE RECURSOS HUMANOS">
+                    DIRECCION DE RECURSOS HUMANOS
+                  </option>
+                  <option value="GESTION PATRIMONIAL Y SERVICIOS GENERALES">
+                    GESTION PATRIMONIAL Y SERVICIOS GENERALES
+                  </option>
+                  <option value="JEFATURA DE GABINETE">
+                    JEFATURA DE GABINETE
+                  </option>
+                  <option value="PRESIDENCIA">PRESIDENCIA</option>
+                  <option value="UNIDAD DE AUDITORIA INTERNA">
+                    UNIDAD DE AUDITORIA INTERNA
+                  </option>
+                  <option value="DIRECCION GENERAL TECNICA, ADMINISTRATIVA Y LEGAL">
+                    DIRECCION GENERAL TECNICA, ADMINISTRATIVA Y LEGAL
+                  </option>
+                  <option value="DIRECCION DE SEGURIDAD MEDIOAMBIENTAL EN EL TRANSPORTE">
+                    DIRECCION DE SEGURIDAD MEDIOAMBIENTAL EN EL TRANSPORTE
+                  </option>
+                  <option value="DIRECCION NACIONAL DE EVALUACION Y MONITOREO ACCIDENTOLOGICO">
+                    DIRECCION NACIONAL DE EVALUACION Y MONITOREO ACCIDENTOLOGICO
+                  </option>
+                  <option value="DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS AERONAUTICOS">
+                    DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS AERONAUTICOS
+                  </option>
+                  <option value="DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS AUTOMOTORES">
+                    DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS AUTOMOTORES
+                  </option>
+                  <option value="DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS MARITIMOS, FLUVIALES Y LACUSTRES">
+                    DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS MARITIMOS,
+                    FLUVIALES Y LACUSTRES
+                  </option>
+                  <option value="DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS FERROVIARIOS">
+                    DIRECCION NACIONAL DE INVESTIGACION DE SUCESOS FERROVIARIOS
                   </option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
@@ -350,27 +363,7 @@ export default function createUser() {
           </Form>
         </div>
 
-        {/* <h2>Lista de Usuarios</h2>
-        <ul>
-          {allUsers.map((usuario) => (
-            <li key={usuario.orden}>
-              <p>Orden: {usuario.orden}</p>
-              <p>Apellido: {usuario.apellido}</p>
-              <p>Nombre: {usuario.nombre}</p>
-              <p>Nro. de Afiliado: {usuario.nroAfiliado}</p>
-              <p>Fecha de Nacimiento: {usuario.fechaNacimiento}</p>
-              <p>DNI: {usuario.dni}</p>
-              <p>GÉNERO: {usuario.genero}</p>
-              <p>CUIT: {usuario.cuit}</p>
-              <p>Estado Civil: {usuario.estadoCivil}</p>
-              <p>Hijos: {usuario.hijos}</p>
-              <p>Categoría: {usuario.categoria}</p>
-              <p>Mail: {usuario.mail}</p>
-              <p>Celular: {usuario.celular}</p>
-              <p>Sector: {usuario.sector}</p>
-            </li>
-          ))}
-        </ul> */}
+        <TableList users={allUsers} />
       </div>
     </>
   );

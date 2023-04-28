@@ -1,10 +1,11 @@
-import Table from "./components/TableList";
+import CreateUser from "./components/CreateUser";
+import TableList from "./components/TableList";
 import "./App.css";
 
 function App() {
   return (
     <>
-      <Table />
+      <CreateUser />
     </>
   );
 }
