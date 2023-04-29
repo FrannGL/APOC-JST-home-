@@ -41,46 +41,59 @@ export default function createUser() {
       event.preventDefault();
       event.stopPropagation();
     } else {
-      const apellido = document.getElementById("apellido").value;
-      const nombre = document.getElementById("nombre").value;
-      const nroAfiliado = document.getElementById("afiliado").value;
-      const fechaNacimiento = document.getElementById("fechaNacimiento").value;
       const dni = document.getElementById("dni").value;
-      const cuit = document.getElementById("cuit").value;
-      const genero = document.getElementById("genero").value;
-      const estadoCivil = document.getElementById("estadoCivil").value;
-      const hijos = document.getElementById("hijos").value;
-      const categoria = document.getElementById("categoria").value;
-      const mail = document.getElementById("mail").value;
-      const celular = document.getElementById("celular").value;
-      const sector = document.getElementById("sector").value;
+      const existingUser = allUsers.find((user) => user.userDni === dni);
 
-      const user = {
-        userApellido: apellido.toUpperCase(),
-        userNombre: nombre.toUpperCase(),
-        userNroAfiliado: nroAfiliado,
-        userFechaNacimiento: fechaNacimiento,
-        userDni: dni,
-        userCuit: cuit,
-        userGenero: genero,
-        userEstadoCivil: estadoCivil,
-        userHijos: hijos,
-        userCategoria: categoria.toUpperCase(),
-        userMail: mail,
-        userCelular: celular,
-        userSector: sector,
-      };
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Usuario Agregado Correctamente",
-        showConfirmButton: true,
-        timer: 1500,
-      });
-      newUser(user);
-      sendResultsToFirestore(user);
+      if (existingUser) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ya existe un usuario con el DNI ingresado",
+        });
+      } else {
+        const apellido = document.getElementById("apellido").value;
+        const nombre = document.getElementById("nombre").value;
+        const nroAfiliado = document.getElementById("afiliado").value;
+        const fechaNacimiento =
+          document.getElementById("fechaNacimiento").value;
+        const dni = document.getElementById("dni").value;
+        const cuit = document.getElementById("cuit").value;
+        const genero = document.getElementById("genero").value;
+        const estadoCivil = document.getElementById("estadoCivil").value;
+        const hijos = document.getElementById("hijos").value;
+        const categoria = document.getElementById("categoria").value;
+        const mail = document.getElementById("mail").value;
+        const celular = document.getElementById("celular").value;
+        const sector = document.getElementById("sector").value;
+
+        const user = {
+          userApellido: apellido.toUpperCase(),
+          userNombre: nombre.toUpperCase(),
+          userNroAfiliado: nroAfiliado,
+          userFechaNacimiento: fechaNacimiento,
+          userDni: dni,
+          userCuit: cuit,
+          userGenero: genero,
+          userEstadoCivil: estadoCivil,
+          userHijos: hijos,
+          userCategoria: categoria.toUpperCase(),
+          userMail: mail,
+          userCelular: celular,
+          userSector: sector,
+        };
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Usuario Agregado Correctamente",
+          showConfirmButton: true,
+          timer: 1500,
+        });
+        newUser(user);
+        sendResultsToFirestore(user);
+        form.reset();
+      }
+      setValidated(true);
     }
-    setValidated(true);
   };
 
   return (
@@ -128,7 +141,6 @@ export default function createUser() {
               <Form.Group as={Col}>
                 <Form.Label>Nro. de Afiliado</Form.Label>
                 <Form.Control
-                  required
                   type="text"
                   placeholder="Ingrese el Nro. de Afiliado"
                   id="afiliado"
@@ -224,7 +236,6 @@ export default function createUser() {
               <Form.Group as={Col}>
                 <Form.Label>Hijos</Form.Label>
                 <Form.Control
-                  required
                   type="text"
                   placeholder="Ingrese la cantidad de hijos"
                   id="hijos"
@@ -238,7 +249,6 @@ export default function createUser() {
               <Form.Group as={Col}>
                 <Form.Label>Categoria</Form.Label>
                 <Form.Control
-                  required
                   type="text"
                   placeholder="Ingrese la categoria"
                   id="categoria"
@@ -254,7 +264,6 @@ export default function createUser() {
               <Form.Group as={Col}>
                 <Form.Label>Email</Form.Label>
                 <Form.Control
-                  required
                   type="email"
                   placeholder="Ingrese el email"
                   id="mail"
@@ -268,7 +277,6 @@ export default function createUser() {
               <Form.Group as={Col}>
                 <Form.Label>Celular</Form.Label>
                 <Form.Control
-                  required
                   type="text"
                   placeholder="Ingrese el celular"
                   id="celular"

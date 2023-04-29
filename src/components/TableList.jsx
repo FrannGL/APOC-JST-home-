@@ -45,7 +45,15 @@ export default function TableList({ users }) {
           onClick={toogleMode}
         />
       </Form>
-      <Table striped bordered hover size="sm" variant={mode ? "dark" : "light"}>
+      <Table
+        responsive="sm"
+        striped
+        bordered
+        hover
+        size="sm"
+        variant={mode ? "dark" : "light"}
+        style={{ width: "100%" }}
+      >
         <thead>
           <tr>
             <th>#</th>
@@ -75,7 +83,8 @@ export default function TableList({ users }) {
                     .toLowerCase()
                     .includes(search.toLowerCase()) ||
                   user.userMail.toLowerCase().includes(search.toLowerCase()) ||
-                  user.userDni.includes(search)
+                  user.userDni.includes(search) ||
+                  user.userSector.toLowerCase().includes(search)
             )
             .map((user) => {
               return (
